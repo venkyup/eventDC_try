@@ -16,6 +16,10 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration class for Kafka messaging.
+ * Sets up Kafka producers and consumers for domain events.
+ */
 @Configuration
 public class KafkaConfig {
 
@@ -25,6 +29,11 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    /**
+     * Creates a producer factory for domain events.
+     *
+     * @return ProducerFactory configured for DomainEvent serialization
+     */
     @Bean
     public ProducerFactory<String, DomainEvent> producerFactory() {
         Map<String, Object> config = new HashMap<>();
@@ -34,11 +43,21 @@ public class KafkaConfig {
         return new DefaultKafkaProducerFactory<>(config);
     }
 
+    /**
+     * Creates a Kafka template for sending domain events.
+     *
+     * @return KafkaTemplate configured with the producer factory
+     */
     @Bean
     public KafkaTemplate<String, DomainEvent> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
+    /**
+     * Creates a consumer factory for domain events.
+     *
+     * @return ConsumerFactory configured for DomainEvent deserialization
+     */
     @Bean
     public ConsumerFactory<String, DomainEvent> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
@@ -50,6 +69,11 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
+    /**
+     * Creates a Kafka listener container factory.
+     *
+     * @return ConcurrentKafkaListenerContainerFactory configured with the consumer factory
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, DomainEvent> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, DomainEvent> factory = 

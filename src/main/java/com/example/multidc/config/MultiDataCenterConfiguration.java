@@ -16,6 +16,10 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration class for multi-datacenter setup.
+ * Configures data sources and JPA for multiple datacenters.
+ */
 @Configuration
 @EnableJpaRepositories(
     basePackages = "com.example.multidc.repository",
@@ -24,6 +28,11 @@ import java.util.Map;
 )
 public class MultiDataCenterConfiguration {
 
+    /**
+     * Creates primary datasource properties.
+     *
+     * @return DataSourceProperties for the primary datacenter
+     */
     @Primary
     @Bean
     @ConfigurationProperties("spring.datasource.primary")
@@ -31,12 +40,22 @@ public class MultiDataCenterConfiguration {
         return new DataSourceProperties();
     }
 
+    /**
+     * Creates secondary datasource properties.
+     *
+     * @return DataSourceProperties for the secondary datacenter
+     */
     @Bean
     @ConfigurationProperties("spring.datasource.secondary")
     public DataSourceProperties secondaryDataSourceProperties() {
         return new DataSourceProperties();
     }
 
+    /**
+     * Creates the primary datasource.
+     *
+     * @return DataSource for the primary datacenter
+     */
     @Primary
     @Bean
     public DataSource primaryDataSource() {
@@ -45,6 +64,11 @@ public class MultiDataCenterConfiguration {
             .build();
     }
 
+    /**
+     * Creates the secondary datasource.
+     *
+     * @return DataSource for the secondary datacenter
+     */
     @Bean
     public DataSource secondaryDataSource() {
         return secondaryDataSourceProperties()
@@ -52,6 +76,12 @@ public class MultiDataCenterConfiguration {
             .build();
     }
 
+    /**
+     * Creates the entity manager factory for multi-datacenter operations.
+     *
+     * @param jpaProperties JPA configuration properties
+     * @return EntityManagerFactory configured for multi-datacenter support
+     */
     @Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean multiDcEntityManagerFactory(

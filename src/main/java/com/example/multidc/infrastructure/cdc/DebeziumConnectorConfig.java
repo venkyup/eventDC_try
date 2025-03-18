@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+/**
+ * Configuration class for Debezium connector.
+ * Provides configuration properties for connecting to and monitoring a PostgreSQL database.
+ */
 @Component
 public class DebeziumConnectorConfig {
 
@@ -35,6 +39,11 @@ public class DebeziumConnectorConfig {
     @Value("${debezium.connector.table.include.list}")
     private String tableIncludeList;
 
+    /**
+     * Creates a Debezium configuration with PostgreSQL connector settings.
+     * 
+     * @return Configuration object with all necessary properties for Debezium PostgreSQL connector
+     */
     @Bean
     public Configuration debeziumConfig() {
         return Configuration.create()

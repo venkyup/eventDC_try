@@ -16,20 +16,6 @@ spring:
     password: password
     driver-class-name: org.postgresql.Driver
 
-  # Kafka Configuration
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: ${spring.application.name}-${datacenter.id}
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: com.example.multidc.infrastructure.cdc
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -37,6 +23,19 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+
+# Pulsar Configuration
+pulsar:
+  service-url: pulsar://localhost:6650
+  admin-url: http://localhost:8080
+  client:
+    operationTimeoutMs: 30000
+    connectionTimeoutMs: 30000
+    enableTcpNoDelay: true
+    keepAliveIntervalSeconds: 20
+    enableBatching: true
+    batchingMaxPublishDelayMicros: 1000
+    batchingMaxMessages: 1000
 
 # Datacenter Configuration
 datacenter:

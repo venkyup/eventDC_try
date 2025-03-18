@@ -24,7 +24,7 @@ public class MultiDcRepositoryFactoryBean<R extends JpaRepository<T, ID>, T, ID 
     return new MultiDcRepositoryFactory(entityManager);
   }
 
-  private static class MultiDcRepositoryFactory extends JpaRepositoryFactory {
+  protected static class MultiDcRepositoryFactory extends JpaRepositoryFactory {
     public MultiDcRepositoryFactory(EntityManager entityManager) {
       super(entityManager);
     }
