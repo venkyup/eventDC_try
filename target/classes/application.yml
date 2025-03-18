@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: multi-dc-app
+  
+  # Primary DataSource Configuration
+  datasource:
+    url: jdbc:postgresql://primary-dc:5432/mydb
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  
+  # Secondary DataSource Configuration
+  second-datasource:
+    url: jdbc:postgresql://secondary-dc:5432/mydb
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ${spring.application.name}-${datacenter.id}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.example.multidc.infrastructure.cdc
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+# Datacenter Configuration
+datacenter:
+  id: dc1
+
+# Debezium Configuration
+debezium:
+  connector:
+    name: postgres-connector
+    database:
+      hostname: localhost
+      port: 5432
+      user: debezium
+      password: debezium
+      dbname: multidc
+      server:
+        name: ${datacenter.id}
+    schema:
+      include-list: public
+    table:
+      include-list: public.users
+  topic:
+    prefix: ${datacenter.id}.public
+
+# Logging Configuration
+logging:
+  level:
+    '[org.hibernate.SQL]': DEBUG
+    '[org.hibernate.type.descriptor.sql.BasicBinder]': TRACE
+    '[com.example.multidc]': DEBUG 
